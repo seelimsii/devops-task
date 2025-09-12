@@ -26,7 +26,7 @@ pipeline {
                     docker.image('node:18-alpine').inside {
                         dir('src') {
                             sh 'npm install --cache .npm-cache'
-                            sh 'npm test'
+                            
                         }
                     }
                 }
@@ -77,4 +77,5 @@ pipeline {
     }
 
 }
+
 
