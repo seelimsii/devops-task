@@ -9,7 +9,7 @@ COPY package*.json ./
 RUN npm install
 
 # Copy the rest of the application code
-COPY . .
+COPY src/ .
 
 # Stage 2: Run tests
 FROM base AS test
@@ -23,4 +23,5 @@ ENV NODE_ENV=production
 EXPOSE 3000
 
 # Command to run the application
-CMD ["node", "src/index.js"]
+
+CMD ["node", "src/app.js"]
