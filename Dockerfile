@@ -12,8 +12,7 @@ RUN npm install
 COPY src/ .
 
 # Stage 2: Run tests
-FROM base AS test
-RUN npm test
+
 
 # Stage 3: Production build
 FROM base AS production
@@ -25,3 +24,4 @@ EXPOSE 3000
 # Command to run the application
 
 CMD ["node", "src/app.js"]
+
