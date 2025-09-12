@@ -24,8 +24,10 @@ pipeline {
                     echo 'Installing dependencies and running tests...'
                     // Use a node container to keep the Jenkins agent clean
                     docker.image('node:18-alpine').inside {
-                        sh 'npm install'
-                        sh 'npm test'
+                        dir('src') {
+                            sh 'npm install'
+                            sh 'npm test'
+                        }
                     }
                 }
             }
@@ -73,4 +75,5 @@ pipeline {
             cleanWs() // Clean up the workspace
         }
     }
+
 }
