@@ -37,16 +37,22 @@ pipeline {
             steps {
                 script {
                     echo 'Building Docker image...'
-                    def dockerImage = docker.build("${ECR_REPO_URL}:${env.BUILD_NUMBER}")
-
-                    // Push to ECR
-                    echo 'Pushing image to AWS ECR...'
+                    def image = docker.build("${ECR_REPO_URL}:${env.BUILD_NUMBER}")
+        
                     withAWS(credentials: 'aws-credentials', region: AWS_REGION) {
-                        dockerImage.push()
+                        echo 'Authenticating Docker to ECR...'
+                        sh """
+                            aws ecr get-login-password --region ${AWS_REGION} \
+                            | docker login --username AWS --password-stdin ${ECR_REPO_URL}
+                        """
+        
+                        echo 'Pushing image to AWS ECR...'
+                        sh "docker push ${ECR_REPO_URL}:${env.BUILD_NUMBER}"
                     }
                 }
             }
         }
+
 
         stage('Deploy to EKS') {
             steps {
@@ -77,5 +83,6 @@ pipeline {
     }
 
 }
+
 
 
