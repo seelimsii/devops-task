@@ -59,9 +59,18 @@ pipeline {
                 script {
                     echo 'Deploying to EKS cluster...'
                     withAWS(credentials: 'aws-credentials', region: AWS_REGION) {
-                        // Use a kubectl container to deploy
-                        // The --entrypoint="" argument is the fix for the error
-                        docker.image('bitnami/kubectl:latest').inside('--entrypoint=""') {
+                        // Use the official AWS CLI image which contains the 'aws' command
+                        docker.image('amazon/aws-cli:latest').inside('--entrypoint=""') {
+                            
+                            // --- ADDED SECTION: Install kubectl ---
+                            echo 'Installing kubectl...'
+                            // Note: The kubectl version should ideally match your cluster version
+                            sh 'curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.31.2/2025-09-01/bin/linux/amd64/kubectl'
+                            sh 'chmod +x ./kubectl'
+                            sh 'mv ./kubectl /usr/local/bin/'
+                            echo 'kubectl installed.'
+                            // ------------------------------------
+        
                             // Get kubectl credentials for our EKS cluster
                             sh "aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}"
         
@@ -89,6 +98,7 @@ pipeline {
     }
 
 }
+
 
 
 
