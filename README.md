@@ -6,7 +6,7 @@ This repository contains the source code and configuration for a fully automated
 
 ```mermaid
 graph TD
-    A[Developer pushes to 'dev' branch on GitHub] -->|Webhook| B(Jenkins Server);
+    A[Developer pushes to 'main' branch on GitHub] -->|Webhook| B(Jenkins Server);
     B --> C{Pipeline Starts};
     C --> D[1. Checkout Code];
     D --> E[2. Build & Test];
@@ -51,4 +51,5 @@ graph TD
 1.  **Checkout**: Clones the source code from the triggering GitHub branch.
 2.  **Build & Test**: Installs npm dependencies and runs `npm test` inside a clean Node.js container.
 3.  **Dockerize**: Builds a Docker image of the application and tags it with the Jenkins build number. It then pushes this image to the AWS ECR repository.
+
 4.  **Deploy to EKS**: Jenkins authenticates with the EKS cluster, updates the Kubernetes deployment manifest with the new image URL, and applies the configuration using `kubectl apply`. This triggers a rolling update of the application pods.
