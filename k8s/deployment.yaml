@@ -5,7 +5,7 @@ metadata:
   labels:
     app: devops-app
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: devops-app
@@ -18,4 +18,5 @@ spec:
       - name: devops-app-container
         image: __IMAGE_URL__  # Jenkins will replace this!
         ports:
+
         - containerPort: 3000
