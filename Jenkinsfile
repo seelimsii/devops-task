@@ -77,7 +77,7 @@ pipeline {
                             sh "sed -i 's|__IMAGE_URL__|${imageUrl}|g' k8s/deployment.yaml"
         
                             // Apply the Kubernetes manifests using the local kubectl
-                            sh "./kubectl apply -f k8s/"
+                             sh "./kubectl --kubeconfig ./kubeconfig apply -f k8s/"
                             
                             echo "Deployment successful!"
                         }
@@ -96,6 +96,7 @@ pipeline {
     }
 
 }
+
 
 
 
