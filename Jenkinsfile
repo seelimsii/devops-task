@@ -59,29 +59,26 @@ pipeline {
                 script {
                     echo 'Deploying to EKS cluster...'
                     withAWS(credentials: 'aws-credentials', region: AWS_REGION) {
-                        // Use the official AWS CLI image which contains the 'aws' command
                         docker.image('amazon/aws-cli:latest').inside('--entrypoint=""') {
                             
-                            // --- ADDED SECTION: Install kubectl ---
                             echo 'Installing kubectl...'
-                            // Note: The kubectl version should ideally match your cluster version
                             sh 'curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.31.2/2025-09-01/bin/linux/amd64/kubectl'
                             sh 'chmod +x ./kubectl'
-                            sh 'mv ./kubectl /usr/local/bin/'
-                            echo 'kubectl installed.'
-                            // ------------------------------------
+                            // --- REMOVED THE 'mv' COMMAND ---
+                            echo 'kubectl is ready to use.'
         
-                            // Get kubectl credentials for our EKS cluster
+                            // Get kubectl credentials
                             sh "aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}"
         
-                            // Replace the image placeholder in the deployment manifest
+                            // Replace the image placeholder
                             def imageUrl = "${ECR_REPO_URL}:${env.BUILD_NUMBER}"
                             sh "sed -i 's|__IMAGE_URL__|${imageUrl}|g' k8s/deployment.yaml"
         
-                            // Apply the Kubernetes manifests
-                            sh "kubectl apply -f k8s/"
+                            // --- UPDATED THIS COMMAND ---
+                            // Apply the Kubernetes manifests using the local kubectl
+                            sh "./kubectl apply -f k8s/"
                             
-                            echo "Deployment successful! Check the service status with 'kubectl get svc devops-app-service'"
+                            echo "Deployment successful!"
                         }
                     }
                 }
@@ -98,6 +95,7 @@ pipeline {
     }
 
 }
+
 
 
 
