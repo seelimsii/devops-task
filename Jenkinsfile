@@ -62,7 +62,7 @@ pipeline {
                         docker.image('amazon/aws-cli:latest').inside('--entrypoint=""') {
                             
                             echo 'Installing kubectl...'
-                            sh 'sudo rm -f /usr/local/bin/kubectl'
+                            
                             sh 'curl -L -s https://dl.k8s.io/release/stable.txt'
                             sh 'curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"'
                             sh 'chmod +x ./kubectl'
@@ -96,6 +96,7 @@ pipeline {
     }
 
 }
+
 
 
 
