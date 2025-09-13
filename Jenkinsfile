@@ -4,7 +4,7 @@ pipeline {
     environment {
         // Get these values from 'terraform output'
         AWS_REGION       = 'ap-south-1'
-        ECR_REPO_URL     = '167524899243.dkr.ecr.ap-south-1.amazonaws.com/devops-task-app' // e.g., 123456789012.dkr.ecr.ap-south-1.amazonaws.com/devops-task-app
+        ECR_REPO_URL     = '167524899243.dkr.ecr.ap-south-1.amazonaws.com/devops-task-app' 
         EKS_CLUSTER_NAME = 'devops-task-cluster'
     }
 
@@ -62,7 +62,7 @@ pipeline {
                         docker.image('amazon/aws-cli:latest').inside('--entrypoint=""') {
                             
                             echo 'Installing kubectl...'
-                            sh 'curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.31.2/2025-09-01/bin/linux/amd64/kubectl'
+                            sh 'curl -o kubectl https://s3.ap-south-1.amazonaws.com/amazon-eks/1.31.2/2025-09-01/bin/linux/amd64/kubectl'
                             sh 'chmod +x ./kubectl'
                             echo 'kubectl is ready to use.'
         
@@ -94,6 +94,7 @@ pipeline {
     }
 
 }
+
 
 
 
