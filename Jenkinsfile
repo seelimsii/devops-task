@@ -64,17 +64,16 @@ pipeline {
                             echo 'Installing kubectl...'
                             sh 'curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.31.2/2025-09-01/bin/linux/amd64/kubectl'
                             sh 'chmod +x ./kubectl'
-                            // --- REMOVED THE 'mv' COMMAND ---
                             echo 'kubectl is ready to use.'
         
-                            // Get kubectl credentials
-                            sh "aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}"
+                            // --- THIS IS THE FIX ---
+                            // Tell aws-cli to write the kubeconfig to a local, writable file
+                            sh "aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION} --kubeconfig ./kubeconfig"
         
                             // Replace the image placeholder
                             def imageUrl = "${ECR_REPO_URL}:${env.BUILD_NUMBER}"
                             sh "sed -i 's|__IMAGE_URL__|${imageUrl}|g' k8s/deployment.yaml"
         
-                            // --- UPDATED THIS COMMAND ---
                             // Apply the Kubernetes manifests using the local kubectl
                             sh "./kubectl apply -f k8s/"
                             
@@ -95,6 +94,7 @@ pipeline {
     }
 
 }
+
 
 
 
